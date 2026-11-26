@@ -13,7 +13,16 @@ public class ServidorUDP {
                 String texto = new String(recibido.getData(), 0,
                         recibido.getLength(), StandardCharsets.UTF_8); // ¡solo los bytes válidos!
                 System.out.println(recibido.getAddress() + ":" + recibido.getPort() + " -> " + texto);
-                byte[] resp = ("ECO: " + texto).getBytes(StandardCharsets.UTF_8);
+
+                String[] palabras = texto.split(";");
+                String masLarga = "";
+                for (String p : palabras) {
+                    if (p.trim().length() > masLarga.length()) {
+                        masLarga = p.trim();
+                    }
+                }
+                String respuesta = "OK " + masLarga + " " + masLarga.length();
+                byte[] resp = respuesta.getBytes(StandardCharsets.UTF_8);
                 socket.send(new DatagramPacket(resp, resp.length,
                         recibido.getAddress(), recibido.getPort())); // respondo al remitente
             }
